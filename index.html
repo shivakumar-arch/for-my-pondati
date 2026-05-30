@@ -1,117 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Pondati ❤️</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Permanent Favorite Pondati ❤️</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>@keyframes float { 0% { transform: translateY(100vh) scale(0); opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } } .heart-particle { position: fixed; pointer-events: none; animation: float 4s linear forwards; }</style>
+    <style>
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.3); opacity: 0; }
+        }
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            animation: floatHeart 4s linear forwards;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-tr from-pink-100 via-red-50 to-rose-200 min-h-screen font-sans flex flex-col justify-between overflow-x-hidden antialiased select-none">
+
     <div id="heart-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <audio id="bg-music" src="ohoh.mp3" loop></audio>
+    
     <div class="fixed top-4 right-4 z-50">
-        <button id="music-btn" onclick="toggleMusic()" class="bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-pink-200 text-rose-500 cursor-pointer"><i id="music-icon" class="fa-solid fa-volume-xmark text-lg"></i></button>
+        <button id="music-btn" onclick="toggleMusic()" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-pink-200 text-rose-500 cursor-pointer hover:scale-110 active:scale-95 transition-all duration-300">
+            <i id="music-icon" class="fa-solid fa-music text-lg"></i>
+        </button>
     </div>
+
     <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-md mx-auto">
-        <div id="dynamic-card" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center transition-all duration-300 scale-100 opacity-100"></div>
+
+        <div id="page-1" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center transform transition-all duration-300 scale-100">
+            <div class="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <i class="fa-solid fa-lock text-rose-500 text-3xl animate-bounce"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800 mb-6 leading-snug">
+                Type my nickname called by you,<br>
+                <span class="text-rose-500">when you call that name i get "vekkam"</span><br>
+                <span class="text-xs text-slate-400 font-medium">(type without space)</span>
+            </h2>
+            <input type="password" id="passcode-input" placeholder="Enter secret code..." class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-center font-bold text-slate-700 focus:outline-none focus:border-rose-400 focus:bg-white mb-2 text-lg transition-all">
+            <p id="error-msg" class="text-red-500 text-sm font-semibold mb-4 hidden">Ayo! Wrong name. Try again! 🤭</p>
+            <button onclick="checkPasscode()" class="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all text-lg cursor-pointer">Unlock Secret Portal ✨</button>
+            <div class="mt-4 border-t border-slate-100 pt-4">
+                <button onclick="showNextHint()" class="text-xs text-rose-400 font-bold underline cursor-pointer">Need a Hint? 🤔</button>
+                <div id="hint-box" class="mt-3 text-sm text-slate-600 font-medium bg-rose-50/50 p-3 rounded-xl border border-pink-100 hidden animate-fadeIn"></div>
+            </div>
+        </div>
+
+        <div id="page-2" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block animate-bounce">🥳🎉</span>
+            <h2 class="text-3xl font-black text-slate-800 mb-4">Correct-u, My Pondati! ❤️</h2>
+            <p class="text-slate-600 mb-8 font-medium leading-relaxed">You remembered it perfectly! Welcome to your exclusive secret layout space. Ready to run through our little journey?</p>
+            <button onclick="nextPage(2, 3)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg hover:bg-rose-600 active:scale-95 transition-all cursor-pointer">Let's Go! 🚀</button>
+        </div>
+
+        <div id="page-3" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">👀🧠</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Let's be totally honest...</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">Ever since you crossed paths with me, my phone storage is 90% your candid snapshots, and my brain capacity is 100% filled up completely with your thoughts.</p>
+            <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-4 text-sm font-semibold mb-6">⚠️ WARNING: Extreme cuteness levels ahead, Pondati!</div>
+            <button onclick="nextPage(3, 4)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Next Complaint Please 🤭</button>
+        </div>
+
+        <div id="page-4" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block animate-pulse">😤👑</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Illegal Levels of Cuteness!</h2>
+            <p class="text-slate-600 mb-6 font-medium">It is honestly a certified crime how you gaze straight into my eyes and make me completely lose my line of thought. How do you do that?</p>
+            <button onclick="nextPage(4, 5)" class="w-full py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-md active:scale-95 transition-all cursor-pointer">Because I am a Cute Rowdy 👑</button>
+        </div>
+
+        <div id="page-5" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🤫🧸</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">My Absolute Favorite Rule...</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">No matter how hectic or crazy the day gets, sleeping on my chest peacefully is a mandatory daily ritual. You have absolutely zero escaping rights from this frame!</p>
+            <button onclick="nextPage(5, 6)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Deal Signed! 🤝</button>
+        </div>
+
+        <div id="page-6" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">😋🍓</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">A Highly Spicy Confession! 🔥</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">I have to say this out loud... I am deeply, completely, and hopelessly obsessed with your super soft, incredibly cute, and beautiful nyam nyam! 🤭</p>
+            <button onclick="nextPage(6, 7)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Heyyy Naughty! 😂🔥</button>
+        </div>
+
+        <div id="page-7" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🤤🍯</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Pure Absolute Addiction...</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">Let's be completely real here... your beautiful, precious bujjikutty tastes way sweeter and more intensely addictive than anything else in this entire world! 😋🔥</p>
+            <button onclick="nextPage(7, 8)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Ayo Blushing Hard! 🙈❤️</button>
+        </div>
+
+        <div id="page-8" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🍳🔥</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Your Ultimate Favorite...</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">Don't even try to pretend or deny it! I know for a pure, undeniable fact that you absolutely love my muttai more than anything else in this universe! 😉🌟</p>
+            <button onclick="nextPage(8, 9)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Fact-u True! 🙈🚀</button>
+        </div>
+
+        <div id="page-9" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🍒🏏</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">The Support Crew!</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">And you just can't resist grabbing, squeezing, and playing around with my tiny, little tingli tingli whenever we get close! Right or double right? 😜</p>
+            <button onclick="nextPage(9, 10)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Double Right! 😜💥</button>
+        </div>
+
+        <div id="page-10" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🤪💡</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">A Quick Naughty Test!</h2>
+            <p class="text-slate-600 mb-6 font-medium text-sm">When exactly do I look the most handsome according to your calculation?</p>
+            <div class="grid grid-cols-1 gap-3 text-left text-sm">
+                <button onclick="alert('Hehe, accurate! 😉'); nextPage(10, 11)" class="p-4 bg-rose-50 border border-rose-200 text-rose-700 font-bold rounded-2xl cursor-pointer hover:bg-rose-100 transition-colors">A) When you're teasing me relentlessly without breaks.</button>
+                <button onclick="alert('Aww, blushing real hard now! 🥺'); nextPage(10, 11)" class="p-4 bg-rose-50 border border-rose-200 text-rose-700 font-bold rounded-2xl cursor-pointer hover:bg-rose-100 transition-colors">B) When you smile looking directly into my eyes.</button>
+            </div>
+        </div>
+
+        <div id="page-11" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block" id="slider-emoji">❤️</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">How much do you love me?</h2>
+            <input type="range" id="love-slider" min="1" max="4" value="1" oninput="handleSliderChange(this.value)" class="w-full h-3 bg-pink-100 rounded-lg appearance-none cursor-pointer accent-rose-500 my-6">
+            <div id="slider-text" class="text-md font-black text-rose-600 mb-8 h-8">I like you a decent amount... 🫣</div>
+            <button onclick="nextPage(11, 12)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Lock My Answer 🔒</button>
+        </div>
+
+        <div id="page-12" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🧬🔬</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Quick Medical Fact Check!</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">Scientists claim the human body structure is roughly 70% water... but checking your physical layout, you are clearly made of 100% fine Azhagi material and pure unadulterated mischief!</p>
+            <button onclick="nextPage(12, 13)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Hehe Valid Point! 😂</button>
+        </div>
+
+        <div id="page-13" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-2 block animate-pulse">💋💋</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">The Kiss Counter Game</h2>
+            <p class="text-slate-600 text-sm mb-4 font-medium">Tap the button to log exactly how many sweet kisses you owe me right now!</p>
+            <div class="text-5xl font-black text-rose-600 mb-6 tracking-wider" id="kisses-display">0</div>
+            <button onclick="addKiss()" class="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl mb-6 cursor-pointer shadow-md active:scale-95 transition-all">+ Give a Kiss 💋</button>
+            <br>
+            <button onclick="nextPage(13, 14)" class="px-6 py-2 bg-slate-800 text-white font-bold rounded-xl text-xs cursor-pointer">Go to Next Page ➡️</button>
+        </div>
+
+        <div id="page-14" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">👁️⚡👁️</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Eye Contact Challenge</h2>
+            <p class="text-slate-600 text-sm mb-6 font-medium leading-relaxed">Stare directly at the screen without blinking or breaking out into a massive smile for 5 whole seconds!</p>
+            <button onclick="startChallenge(this)" class="px-6 py-4 bg-rose-500 text-white font-bold rounded-2xl cursor-pointer shadow-md w-full active:scale-[0.99] transition-transform">Start Challenge ⏱️</button>
+        </div>
+
+        <div id="page-15" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🥊❤️</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">In Case Of A Cute Fight...</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">Even when we have tiny arguments, who is the wonderful soul who will immediately say sorry, hug you tightly, and clear the air completely?</p>
+            <button onclick="nextPage(15, 16)" class="w-full py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-md cursor-pointer active:scale-95 transition-transform">You, my sweet boy! *Idhu dhaan correct* 🥰</button>
+        </div>
+
+        <div id="page-16" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block animate-bounce">📸😗</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">The Brain Storage Warning</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">Just a quick structural reminder that you look incredibly beautiful when you get angry and pout your lips. I lock those moments safely in my heart's vault forever.</p>
+            <button onclick="nextPage(16, 17)" class="px-8 py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">Keep locked forever! 🔒</button>
+        </div>
+
+        <div id="page-17" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">📜🖋️</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-4">The Permanent Contract</h2>
+            <p class="text-slate-600 mb-6 font-medium leading-relaxed">By clicking the button below, you officially agree to always listen to my terrible jokes and let me tease you endlessly for the rest of our natural lives.</p>
+            <button onclick="nextPage(17, 18)" class="w-full py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-md cursor-pointer active:scale-95 transition-transform">I Explicitly Accept the Terms 📜</button>
+        </div>
+
+        <div id="page-18" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-6xl mb-4 block">🤝💖</span>
+            <h2 class="text-2xl font-black text-slate-800 mb-6">My Promises to You, Pondati</h2>
+            <ul class="space-y-3 text-slate-700 font-semibold text-left text-sm mb-8">
+                <li class="flex items-start gap-2"><i class="fa-solid fa-heart text-rose-500 text-xs mt-1"></i><span>I promise to always listen to your long, cute rants even when sleepy.</span></li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-heart text-rose-500 text-xs mt-1"></i><span>I promise to protect you and back you up unconditionally.</span></li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-heart text-rose-500 text-xs mt-1"></i><span>I promise to keep choosing you, every single day, over and over.</span></li>
+            </ul>
+            <button onclick="nextPage(18, 19)" class="w-full py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-md cursor-pointer hover:bg-rose-600 transition-colors">Read My Heart's Big Question 💖</button>
+        </div>
+
+        <div id="page-19" class="w-full bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0 min-h-[380px] flex flex-col justify-center">
+            <span class="text-6xl mb-4 block animate-pulse">💍✨</span>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Will you spend forever with me?</h2>
+            <p class="text-slate-600 mb-8 text-sm font-semibold">You are my today, my tomorrow, and my permanent favorite distraction.</p>
+            
+            <div class="flex flex-row justify-center items-center gap-6 relative h-20 w-full" id="proposal-buttons-container">
+                <button onclick="triggerSuccessSequence()" class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-500/20 text-xl cursor-pointer z-20 hover:scale-105 active:scale-95 transition-transform">
+                    YES! 😭❤️
+                </button>
+                <button id="no-btn" onmouseover="escapeNoButton()" onclick="escapeNoButton()" class="absolute px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl z-20 transition-all duration-150 ease-out whitespace-nowrap shadow-sm border border-slate-300">
+                    No 😜
+                </button>
+            </div>
+        </div>
+
+        <div id="page-20" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center hidden transform transition-all duration-300 scale-95 opacity-0">
+            <span class="text-7xl mb-4 block animate-bounce">🎉🏆💖🛸</span>
+            <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 mb-2">OMGGGG YES! 😍</h2>
+           <p class="text-md font-bold text-slate-800 mb-1">You are officially mine forever, Pondati! 🥂✨</p>
+            <p class="text-slate-600 text-xs font-medium mb-8 leading-relaxed">Get ready for infinite laughter, spicy teasing sessions, absolute structural safety, and endless love!</p>
+            
+            <a href="tel:9353781514" class="inline-block px-8 py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-black rounded-2xl shadow-xl text-lg animate-pulse tracking-wide cursor-pointer decoration-none border-none">
+                Call Purushan 📞
+            </a>
+        </div>
+
     </main>
-    <footer class="w-full text-center py-4 text-xs font-semibold text-rose-400/80 tracking-widest uppercase relative z-10">Made with Love Just For You ❤️</footer>
+
+    <footer class="w-full text-center py-4 text-xs font-semibold text-rose-400/80 tracking-widest uppercase relative z-10">
+        Made with Love Just For You ❤️
+    </footer>
+
     <script>
-        let currentPageIndex = 0, currentHintIndex = 0, audioCtx = null, musicInterval = null, isMusicPlaying = false;
-        const hints = ["Hint 1: oftenly not called only for konjifying used 😉", "Hint 2: we always put 🤫", "Hint 3: idhu koode kandu pidika mudiyala, based on your size! 😂🤷‍♂️"];
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playTone(freq, duration, type = "sine", volume = 0.1) {
-            initAudio(); if (!audioCtx) return;
-            try {
-                let osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
-                osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-                osc.connect(gainNode); gainNode.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
-        }
-        function startMelodyLoop() {
-            const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23, 392.00, 329.63]; let index = 0;
-            musicInterval = setInterval(() => { playTone(notes[index], 0.8, "triangle", 0.03); index = (index + 1) % notes.length; }, 600);
-        }
+        // Core Audio Setup Tracker
         function toggleMusic() {
+            const music = document.getElementById('bg-music');
             const icon = document.getElementById('music-icon');
-            if (!isMusicPlaying) { startMelodyLoop(); isMusicPlaying = true; icon.className = "fa-solid fa-volume-high text-lg text-emerald-500 animate-pulse"; playTone(523.25, 0.3); }
-            else { clearInterval(musicInterval); isMusicPlaying = false; icon.className = "fa-solid fa-volume-xmark text-lg text-rose-500"; }
+            
+            if (music.paused) {
+                music.play().catch(() => {
+                    alert("Tap anywhere on the screen first, then click the music icon to activate the 'Oh Oh' soundtrack track! 🎵");
+                });
+                icon.className = "fa-solid fa-compact-disc text-lg text-emerald-500 animate-spin";
+            } else {
+                music.pause();
+                icon.className = "fa-solid fa-music text-lg text-rose-500";
+            }
         }
-        function createHeart() {
-            const container = document.getElementById('heart-container'); if(!container) return;
-            const heart = document.createElement('div'); heart.className = 'heart-particle fa-solid fa-heart text-rose-400/30';
-            heart.style.left = Math.random() * 100 + 'vw'; heart.style.fontSize = (Math.random() * 18 + 10) + 'px';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's'; container.appendChild(heart); setTimeout(() => heart.remove(), 4000);
+
+        // Particle generator loop logic
+        function generateHeartParticle() {
+            const holder = document.getElementById('heart-container');
+            if (!holder) return;
+            const element = document.createElement('div');
+            element.className = 'heart-particle fa-solid fa-heart text-rose-400/35';
+            element.style.left = (Math.random() * 100) + 'vw';
+            element.style.fontSize = (Math.random() * 16 + 12) + 'px';
+            element.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            holder.appendChild(element);
+            setTimeout(() => { element.remove(); }, 4000);
         }
-        setInterval(createHeart, 450);
-        const pageMatrix = [
-            { type: "lock" },
-            { emoji: "🥳", title: "Correct-u, My Pondati! ❤️", text: "You remembered it perfectly! Welcome to your exclusive secret layout space. Ready to run through the memory train?", btnText: "Let's Go! 🚀", action: () => renderNextPage() },
-            { emoji: "👀", title: "Let's be totally honest...", text: "Ever since you crossed paths with me, my phone storage is 90% your candid snapshots, and my brain capacity is 100% filled with your thoughts.", btnText: "Next Complaint Please 🤭", action: () => renderNextPage() },
-            { emoji: "😤", title: "Illegal Levels of Cuteness!", text: "It is honestly a certified crime how you gaze straight into my eyes and make me completely lose my line of thought. How do you do that?", btnText: "Because I am a Cute Rowdy 👑", action: () => renderNextPage() },
-            { emoji: "🤫", title: "My Absolute Favorite Rule...", text: "No matter how hectic the day gets, sleeping on my chest peacefully is a mandatory daily ritual. You have no escaping rights from this!", btnText: "Deal Signed! 🤝", action: () => renderNextPage() },
-            { emoji: "😋", title: "A Highly Spicy Confession! 🔥", text: "I have to say this out loud... I am deeply, completely obsessed with your super soft, incredibly cute nyam nyam! 🤭", btnText: "Heyyy Naughty! 😂", action: () => renderNextPage() },
-            { emoji: "🔥", title: "Let's Talk About Your Favorites...", text: "Don't pretend! I know for a pure fact that you absolutely love my muttai more than anything else in this world! 😉", btnText: "Ayo True! 🙈", action: () => renderNextPage() },
-            { emoji: "🍒", title: "The Structural Support Crew!", text: "And let's not leave out the legendary assistants... you love playing around with my tiny tingli tingli! Right or double right? 🏏", btnText: "Double Right! 😜", action: () => renderNextPage() },
-            { emoji: "👑", title: "My Only Precious One", text: "You, my gorgeous bujjikutty, are the absolute queen holding full ownership rights over my heart, my mind, and everything in between.", btnText: "Aww stop blushing me 🥺", action: () => renderNextPage() },
-            { type: "quiz" }, { type: "slider" },
-            { emoji: "🤪", title: "Quick Medical Fact Check!", text: "Scientists claim the human body structure is roughly 70% water... but checking your layout, you are clearly made of 100% fine Azhagi material and pure mischief!", btnText: "Hehe valid point! 😂", action: () => renderNextPage() },
-            { emoji: "🏍️", title: "The Royal Enfield Check", text: "How would you rate your luxury travel experience sitting behind me on my Classic 350 motorcycle?", btnText: "10/10 Rowdy Experience! 🏍️", action: () => renderNextPage() },
-            { emoji: "🧸", title: "Midnight Behavior Analysis", text: "Who is the absolute monster who suddenly gets aggressive hunger cravings at 2 AM and demands snacks right away?", btnText: "Me! Bring me food 🍕", action: () => renderNextPage() },
-            { emoji: "🥊", title: "In Case Of A Cute Fight...", text: "Even if we have tiny arguments, who is the one who will immediately say sorry, hug you tightly, and clear the air?", btnText: "You, my sweet boy! *Idhu dhaan correct* 🥰", action: () => renderNextPage() },
-            { emoji: "📸", title: "The Brain Storage Warning", text: "Just a reminder that you look incredibly beautiful when you get angry and pout your lips. I lock those moments safely in my heart.", btnText: "Keep locked forever! 🔒", action: () => renderNextPage() },
-            { emoji: "📝", title: "The Permanent Contract", text: "By clicking next, you agree to always listen to my terrible jokes and let me tease you for the rest of our lives.", btnText: "I Accept the Terms 📜", action: () => renderNextPage() },
-            { type: "promises" }, { type: "proposal" }, { type: "celebrate" }
-        ];
-        function renderEngine() {
-            const card = document.getElementById('dynamic-card'); const data = pageMatrix[currentPageIndex];
-            card.className = "w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center transition-all duration-300 scale-95 opacity-0";
+        setInterval(generateHeartParticle, 400);
+
+        // Standard Page Router Flow Controller
+        function nextPage(current, next) {
+            const currentDiv = document.getElementById(`page-${current}`);
+            const nextDiv = document.getElementById(`page-${next}`);
+            
+            currentDiv.classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
-                if (data.type === "lock") {
-                    card.innerHTML = `<div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner"><i class="fa-solid fa-lock text-rose-500 text-2xl animate-bounce"></i></div><h2 class="text-xl font-black text-slate-800 mb-4">Type my nickname called by you,<br><span class="text-rose-500">when you call that name i get "vekkam"</span><br><span class="text-xs text-slate-400 font-medium">(type without space)</span></h2><input type="password" id="passcode-input" placeholder="Enter secret code..." class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-center font-bold text-slate-700 focus:outline-none focus:border-rose-400 mb-2"><p id="error-msg" class="text-red-500 text-xs font-semibold mb-2 hidden">Ayo! Wrong name. Try again! 🤭</p><button onclick="validatePasscode()" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-xl shadow-md cursor-pointer transition-transform active:scale-95">Unlock Secret Portal ✨</button><div class="mt-2 border-t border-slate-100 pt-2"><button onclick="revealHint()" class="text-xs text-rose-400 font-bold underline cursor-pointer">Need a Hint? 🤔</button><div id="hint-box" class="mt-2 text-xs text-slate-600 bg-rose-50/50 p-2 rounded-xl hidden"></div></div>`;
-                } else if (data.type === "quiz") {
-                    card.innerHTML = `<span class="text-4xl mb-2 block">😜</span><h2 class="text-xl font-black text-slate-800 mb-4">A Quick Naughty Test!</h2><p class="text-slate-600 mb-4 text-sm font-medium">When do I look the most handsome according to you?</p><div class="grid grid-cols-1 gap-2 text-left text-sm"><button onclick="alert('Hehe, accurate! 😉'); renderNextPage()" class="p-3 bg-rose-50 border border-rose-100 text-rose-700 font-bold rounded-xl cursor-pointer">A) When you're teasing me relentlessly.</button><button onclick="alert('Aww, blushing real hard now! 🥺'); renderNextPage()" class="p-3 bg-rose-50 border border-rose-100 text-rose-700 font-bold rounded-xl cursor-pointer">B) When you smile looking directly at me.</button></div>`;
-                } else if (data.type === "slider") {
-                    card.innerHTML = `<span class="text-4xl mb-2 block" id="slider-emoji">❤️</span><h2 class="text-xl font-black text-slate-800 mb-2">How much do you love me?</h2><input type="range" id="love-slider" min="1" max="4" value="1" oninput="handleSliderChange(this.value)" class="w-full h-2 bg-pink-100 rounded-lg appearance-none cursor-pointer accent-rose-500 my-4"><div id="slider-text" class="text-sm font-black text-rose-600 mb-6 h-6">I like you a decent amount... 🫣</div><button onclick="renderNextPage()" class="px-6 py-3 bg-rose-500 text-white font-bold rounded-xl shadow-md cursor-pointer">Lock My Answer 🔒</button>`;
-                } else if (data.type === "promises") {
-                    card.innerHTML = `<h2 class="text-xl font-black text-slate-800 mb-4 text-center">My Promises to You, Pondati 🤝</h2><ul class="space-y-2 text-slate-700 font-medium text-left text-sm mb-6"><li class="flex items-start gap-2"><i class="fa-solid fa-heart text-rose-500 text-xs mt-1"></i><span>I promise to always listen to your long, cute rants.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-heart text-rose-500 text-xs mt-1"></i><span>I promise to protect you and back you up unconditionally.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-heart text-rose-500 text-xs mt-1"></i><span>I promise to keep choosing you, every single day.</span></li></ul><button onclick="renderNextPage()" class="w-full py-3 bg-rose-500 text-white font-bold rounded-xl shadow-md cursor-pointer">Read My Heart's Big Question 💖</button>`;
-                } else if (data.type === "proposal") {
-                    card.innerHTML = `<span class="text-5xl mb-2 block animate-pulse">💍</span><h2 class="text-2xl font-black text-slate-800 mb-2">Will you spend forever with me?</h2><p class="text-slate-600 mb-6 text-sm">You are my today, my tomorrow, and my permanent favorite distraction.</p><div class="flex flex-row justify-center items-center gap-4 relative h-16 w-full" id="proposal-buttons-container"><button onclick="triggerCelebrationSequence()" class="px-6 py-3 bg-emerald-500 text-white font-black rounded-xl shadow-md text-md cursor-pointer z-20">YES! 😭❤️</button><button id="no-btn" onmouseover="teleportNoButton()" onclick="teleportNoButton()" class="absolute px-5 py-2.5 bg-slate-200 text-slate-600 font-bold rounded-xl z-20 transition-all duration-100 ease-out whitespace-nowrap">No 😜</button></div>`;
-                } else if (data.type === "celebrate") {
-                    card.innerHTML = `<span class="text-5xl mb-2 block animate-bounce">🎉🏆💖</span><h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 mb-2">OMGGGG YES! 😍</h2><p class="text-md font-bold text-slate-800 mb-1">You are officially mine forever, Pondati! 🥂✨</p><p class="text-slate-600 text-xs font-medium">Get ready for infinite laughter, spicy teasing sessions, and endless love!</p>`;
-                } else {
-                    card.innerHTML = `<span class="text-4xl mb-2 block">${data.emoji}</span><h2 class="text-xl font-black text-slate-800 mb-2">${data.title}</h2><p class="text-slate-600 mb-6 text-sm leading-relaxed font-medium">${data.text}</p><button onclick="pageMatrix[currentPageIndex].action()" class="px-6 py-3 bg-rose-500 text-white font-bold rounded-xl shadow-md cursor-pointer active:scale-95 transition-transform">${data.btnText}</button>`;
+                currentDiv.classList.add('hidden');
+                nextDiv.classList.remove('hidden');
+                setTimeout(() => {
+                    nextDiv.classList.remove('scale-95', 'opacity-0');
+                    nextDiv.classList.add('scale-100', 'opacity-100');
+                }, 50);
+            }, 250);
+        }
+
+        // Lock verification conditions
+        function checkPasscode() {
+            const field = document.getElementById('passcode-input').value.trim().toLowerCase();
+            if (field === "kuttyjetti") {
+                nextPage(1, 2);
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        }
+
+        // Progress Hints Engine
+        function showNextHint() {
+            const container = document.getElementById('hint-box');
+            container.classList.remove('hidden');
+            if (currentHintIndex === 0) {
+                container.innerHTML = "Hint 1: oftenly not called only for konjifying used 😉";
+                currentHintIndex = 1;
+            } else if (currentHintIndex === 1) {
+                container.innerHTML = "Hint 2: we always put 🤫";
+                currentHintIndex = 2;
+            } else {
+                container.innerHTML = "Hint 3: idhu koode kandu pidika mudiyala, based on your size! 😂🤷‍♂️";
+            }
+        }
+
+        // Dynamic Slider Text Matrix Updates
+        function handleSliderChange(value) {
+            const text = document.getElementById('slider-text');
+            const emoji = document.getElementById('slider-emoji');
+            if (value == 1) {
+                text.innerText = "I like you a decent amount... 🫣";
+                emoji.innerText = "❤️";
+            } else if (value == 2) {
+                text.innerText = "You occupy my entire mind state! 🧠💖";
+                emoji.innerText = "💖✨";
+            } else if (value == 3) {
+                text.innerText = "To the moon and past all the stars! 🚀🌕";
+                emoji.innerText = "🪐❤️🔥";
+            } else if (value == 4) {
+                text.innerText = "INFINITY & BEYOND! Complete ownership! 👑🔥❤️";
+                emoji.innerText = "👑💍❤️🛸";
+            }
+        }
+
+        // Mini games triggers
+        function addKiss() {
+            kissCount++;
+            document.getElementById('kisses-display').innerText = kissCount;
+        }
+
+        function startChallenge(buttonElement) {
+            let countdown = 5;
+            buttonElement.disabled = true;
+            let loop = setInterval(() => {
+                countdown--;
+                buttonElement.innerText = `Holding focus... ${countdown}s 😳`;
+                if (countdown <= 0) {
+                    clearInterval(loop);
+                    alert("Ayo! You lost the challenge because you blinked and smiled looking right at my profile picture! 😜");
+                    nextPage(14, 15);
                 }
-                card.className = "w-full bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-pink-100 text-center transition-all duration-300 scale-100 opacity-100";
-            }, 200);
+            }, 1000);
         }
-        function renderNextPage() { currentPageIndex++; renderEngine(); playTone(587.33, 0.08); }
-        function validatePasscode() {
-            if (document.getElementById('passcode-input').value.trim().toLowerCase() === "kuttyjetti") { renderNextPage(); }
-            else { document.getElementById('error-msg').classList.remove('hidden'); playTone(150, 0.2, "sawtooth"); }
+
+        // BUG REMOVED: Redesigned evasion algorithms force explicit boundary checks away from center elements
+        function escapeNoButton() {
+            const targetBtn = document.getElementById('no-btn');
+            const constraintBox = document.getElementById('proposal-buttons-container');
+            if (!targetBtn || !constraintBox) return;
+
+            const safeWidthX = constraintBox.clientWidth - targetBtn.clientWidth;
+            
+            let targetCoordinatesX = Math.floor(Math.random() * safeWidthX) - (safeWidthX / 2);
+            let targetCoordinatesY = Math.floor(Math.random() * 80) - 40;
+
+            // Strict exclusion algorithm calculation tracks position shifts away from YES space layers
+            if (Math.abs(targetCoordinatesX) < 75 && Math.abs(targetCoordinatesY) < 35) {
+                targetCoordinatesX += targetCoordinatesX >= 0 ? 80 : -80;
+                targetCoordinatesY += targetCoordinatesY >= 0 ? 40 : -40;
+            }
+
+            targetBtn.style.transform = `translate(${targetCoordinatesX}px, ${targetCoordinatesY}px)`;
         }
-        function revealHint() {
-            const box = document.getElementById('hint-box'); box.classList.remove('hidden');
-            if (currentHintIndex < hints.length) { box.innerHTML = hints[currentHintIndex]; currentHintIndex++; }
-            else { box.innerHTML = hints[hints.length - 1]; } playTone(440, 0.05);
+
+        function triggerSuccessSequence() {
+            for (let index = 0; index < 45; index++) {
+                setTimeout(generateHeartParticle, index * 30);
+            }
+            nextPage(19, 20);
         }
-        function handleSliderChange(val) {
-            const txt = document.getElementById('slider-text'), emj = document.getElementById('slider-emoji');
-            if (val == 1) { txt.innerText = "I like you a decent amount... 🫣"; emj.innerText = "❤️"; }
-            else if (val == 2) { txt.innerText = "You occupy my entire mind state! 🧠💖"; emj.innerText = "💖✨"; }
-            else if (val == 3) { txt.innerText = "To the moon and past all the stars! 🚀🌕"; emj.innerText = "🪐❤️🔥"; }
-            else if (val == 4) { txt.innerText = "INFINITY & BEYOND! Complete ownership! 👑🔥❤️"; emj.innerText = "👑💍❤️🛸"; playTone(880, 0.1); }
-        }
-        function teleportNoButton() {
-            const btn = document.getElementById('no-btn'), box = document.getElementById('proposal-buttons-container'); if (!btn || !box) return;
-            const maxX = box.clientWidth - btn.clientWidth; let rx = Math.floor(Math.random() * maxX) - (maxX / 2), ry = Math.floor(Math.random() * 80) - 40;
-            if (Math.abs(rx) < 60 && Math.abs(ry) < 30) { rx += rx >= 0 ? 70 : -70; ry += ry >= 0 ? 35 : -35; }
-            btn.style.transform = `translate(${rx}px, ${ry}px)`; playTone(Math.random() * 300 + 300, 0.08, "square", 0.03);
-        }
-        function triggerCelebrationSequence() { for(let i=0; i<40; i++) setTimeout(createHeart, i * 30); renderNextPage(); }
-        window.onload = () => { renderEngine(); };
     </script>
 </body>
 </html>
