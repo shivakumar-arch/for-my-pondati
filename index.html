@@ -18,11 +18,11 @@
         }
     </style>
 </head>
-<body onclick="forceAudioUnlock()" class="bg-gradient-to-tr from-pink-100 via-red-50 to-rose-200 min-h-screen font-sans flex flex-col justify-between overflow-x-hidden antialiased select-none">
+<body id="global-body" class="bg-gradient-to-tr from-pink-100 via-red-50 to-rose-200 min-h-screen font-sans flex flex-col justify-between overflow-x-hidden antialiased select-none">
 
     <div id="heart-container" class="fixed inset-0 pointer-events-none z-0"></div>
 
-    <audio id="bg-music" src="ohoh.mp3" loop preload="auto"></audio>
+    <audio id="bg-music" src="./ohoh.mp3" loop preload="auto"></audio>
     
     <div class="fixed top-4 right-4 z-50">
         <button id="music-btn" onclick="toggleMusic(event)" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-pink-200 text-rose-500 cursor-pointer hover:scale-110 active:scale-95 transition-all duration-300">
@@ -197,7 +197,7 @@
             
             <div class="w-full h-32 relative mt-4" id="proposal-buttons-container">
                 <button onclick="triggerSuccessSequence()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-500/20 text-xl cursor-pointer z-30 hover:scale-105 active:scale-95 transition-transform">
-                 YES! 😭❤️
+              YES! 😭❤️
                 </button>
                 <button id="no-btn" onmouseover="teleportNoButton()" onclick="teleportNoButton()" class="absolute top-0 left-0 px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl z-20 transition-all duration-200 ease-out whitespace-nowrap shadow-md border border-slate-300 cursor-pointer">
                     No 😜
@@ -228,25 +228,29 @@
         let noCornerState = 0;
         let audioUnlocked = false;
 
-        // Force browser media context unlock on very first touch interaction channel
-        function forceAudioUnlock() {
+        // Force browser media context unlock automatically on gesture interactions
+        function processGlobalGesture() {
             if (audioUnlocked) return;
             const music = document.getElementById('bg-music');
+            music.volume = 1.0; // Enforce maximum volume limits layout natively
             music.play().then(() => {
                 audioUnlocked = true;
                 document.getElementById('music-icon').className = "fa-solid fa-compact-disc text-lg text-emerald-500 animate-spin";
             }).catch(() => {});
         }
+        
+        // Add gesture hook directly across whole body space layer window frames
+        document.getElementById('global-body').addEventListener('click', processGlobalGesture);
+        document.getElementById('global-body').addEventListener('touchstart', processGlobalGesture);
 
         function toggleMusic(event) {
-            if(event) event.stopPropagation(); // Stops core body trigger collision
+            if(event) event.stopPropagation(); // Avoids body element event duplication clashes
             const music = document.getElementById('bg-music');
             const icon = document.getElementById('music-icon');
             
+            music.volume = 1.0;
             if (music.paused) {
-                music.play().catch(() => {
-                    alert("Tap anywhere else on the screen first, then click this button! 🎵");
-                });
+                music.play().catch(() => {});
                 icon.className = "fa-solid fa-compact-disc text-lg text-emerald-500 animate-spin";
                 audioUnlocked = true;
             } else {
@@ -255,7 +259,6 @@
             }
         }
 
-        // Particle floating systems
         function generateHeartParticle() {
             const holder = document.getElementById('heart-container');
             if (!holder) return;
@@ -287,7 +290,8 @@
         function checkPasscode() {
             const field = document.getElementById('passcode-input').value.trim().toLowerCase();
             if (field === "kuttyjetti") {
-                forceAudioUnlock();
+                audioUnlocked = false;
+                processGlobalGesture();
                 nextPage(1, 2);
             } else {
                 document.getElementById('error-msg').classList.remove('hidden');
@@ -326,14 +330,15 @@
             }
         }
 
-        // Kiss Increments Counter with Capping Logic
+        // Rock-solid fixed Capping Engine triggers the infinity conversion on tap 20 perfectly
         function addKiss() {
-            if (kissCount >= 25) return;
+            if (kissCount >= 20) return;
             kissCount++;
             
             const display = document.getElementById('kisses-display');
-            if (kissCount >= 25) {
-                display.innerHTML = '<i class="fa-solid fa-infinity text-6xl text-rose-500 animate-pulse"></i>';
+            if (kissCount >= 20) {
+                // Renders both text character symbol + icon framework to fully bypass local font load bugs safely
+                display.innerHTML = '<span class="text-6xl font-black text-rose-500 animate-pulse tracking-widest">∞</span>';
                 document.getElementById('kiss-btn').classList.add('hidden');
                 document.getElementById('kiss-max-msg').classList.remove('hidden');
             } else {
@@ -341,9 +346,8 @@
             }
         }
 
-        // WhatsApp Custom Dispatcher Link 
         function sendKissReport() {
-            const countLabel = kissCount >= 25 ? "infinite" : kissCount;
+            const countLabel = kissCount >= 20 ? "infinite" : kissCount;
             const templateString = `Hey Purushan! I just logged and gave you ${countLabel} kisses on our love website portal! 💋😘`;
             const dispatchUrl = `https://api.whatsapp.com/send?phone=919353781514&text=${encodeURIComponent(templateString)}`;
             window.open(dispatchUrl, '_blank');
@@ -360,7 +364,6 @@
             nextBtn.className = "px-8 py-3 bg-rose-500 text-white font-bold rounded-2xl text-sm shadow-md cursor-pointer active:scale-95 transition-transform";
         }
 
-        // Shuffling layout positioning coordinates prevents cross-button clipping
         function teleportNoButton() {
             const targetBtn = document.getElementById('no-btn');
             if (!targetBtn) return;
