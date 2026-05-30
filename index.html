@@ -18,14 +18,14 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-tr from-pink-100 via-red-50 to-rose-200 min-h-screen font-sans flex flex-col justify-between overflow-x-hidden antialiased select-none">
+<body onclick="forceAudioUnlock()" class="bg-gradient-to-tr from-pink-100 via-red-50 to-rose-200 min-h-screen font-sans flex flex-col justify-between overflow-x-hidden antialiased select-none">
 
     <div id="heart-container" class="fixed inset-0 pointer-events-none z-0"></div>
 
-    <audio id="bg-music" src="ohoh.mp3" loop prefetch></audio>
+    <audio id="bg-music" src="ohoh.mp3" loop preload="auto"></audio>
     
     <div class="fixed top-4 right-4 z-50">
-        <button id="music-btn" onclick="toggleMusic()" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-pink-200 text-rose-500 cursor-pointer hover:scale-110 active:scale-95 transition-all duration-300">
+        <button id="music-btn" onclick="toggleMusic(event)" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-pink-200 text-rose-500 cursor-pointer hover:scale-110 active:scale-95 transition-all duration-300">
             <i id="music-icon" class="fa-solid fa-music text-lg"></i>
         </button>
     </div>
@@ -136,10 +136,12 @@
             <span class="text-6xl mb-2 block animate-pulse">💋💋</span>
             <h2 class="text-2xl font-black text-slate-800 mb-2">The Kiss Counter Game</h2>
             <p class="text-slate-600 text-sm mb-4 font-medium">Tap the button to log exactly how many sweet kisses you owe me right now!</p>
-            <div class="text-5xl font-black text-rose-600 mb-6 tracking-wider" id="kisses-display">0</div>
             
-            <button onclick="addKiss()" class="w-full px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl mb-3 cursor-pointer shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-lips"></i> + Give a Kiss 💋
+            <div class="text-5xl font-black text-rose-600 mb-6 tracking-wider flex justify-center items-center h-16" id="kisses-display">0</div>
+            <p id="kiss-max-msg" class="text-rose-600 font-bold text-sm mb-4 hidden animate-pulse">✨ Critical Capacity Blown! Kisses are now infinite! 🤭</p>
+            
+            <button id="kiss-btn" onclick="addKiss()" class="w-full px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl mb-3 cursor-pointer shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+                + Give a Kiss 💋
             </button>
             
             <button onclick="sendKissReport()" class="w-full px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl mb-6 cursor-pointer shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 text-sm">
@@ -195,7 +197,7 @@
             
             <div class="w-full h-32 relative mt-4" id="proposal-buttons-container">
                 <button onclick="triggerSuccessSequence()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-500/20 text-xl cursor-pointer z-30 hover:scale-105 active:scale-95 transition-transform">
-                    YES! 😭❤️
+                 YES! 😭❤️
                 </button>
                 <button id="no-btn" onmouseover="teleportNoButton()" onclick="teleportNoButton()" class="absolute top-0 left-0 px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl z-20 transition-all duration-200 ease-out whitespace-nowrap shadow-md border border-slate-300 cursor-pointer">
                     No 😜
@@ -224,24 +226,36 @@
         let currentHintIndex = 0;
         let kissCount = 0;
         let noCornerState = 0;
+        let audioUnlocked = false;
 
-        // Sound System Logic
-        function toggleMusic() {
+        // Force browser media context unlock on very first touch interaction channel
+        function forceAudioUnlock() {
+            if (audioUnlocked) return;
+            const music = document.getElementById('bg-music');
+            music.play().then(() => {
+                audioUnlocked = true;
+                document.getElementById('music-icon').className = "fa-solid fa-compact-disc text-lg text-emerald-500 animate-spin";
+            }).catch(() => {});
+        }
+
+        function toggleMusic(event) {
+            if(event) event.stopPropagation(); // Stops core body trigger collision
             const music = document.getElementById('bg-music');
             const icon = document.getElementById('music-icon');
             
             if (music.paused) {
                 music.play().catch(() => {
-                    alert("Click anywhere on the web display interface first, then tap the icon toggle button to play the audio track! 🎵");
+                    alert("Tap anywhere else on the screen first, then click this button! 🎵");
                 });
                 icon.className = "fa-solid fa-compact-disc text-lg text-emerald-500 animate-spin";
+                audioUnlocked = true;
             } else {
                 music.pause();
                 icon.className = "fa-solid fa-music text-lg text-rose-500";
             }
         }
 
-        // Ambient heart flow animations
+        // Particle floating systems
         function generateHeartParticle() {
             const holder = document.getElementById('heart-container');
             if (!holder) return;
@@ -255,7 +269,6 @@
         }
         setInterval(generateHeartParticle, 400);
 
-        // Core Page Router Dynamics Switcher
         function nextPage(current, next) {
             const currentDiv = document.getElementById(`page-${current}`);
             const nextDiv = document.getElementById(`page-${next}`);
@@ -271,23 +284,16 @@
             }, 250);
         }
 
-        // Lockscreen evaluation system
         function checkPasscode() {
             const field = document.getElementById('passcode-input').value.trim().toLowerCase();
             if (field === "kuttyjetti") {
-                // Auto-trigger music on password success interaction step natively
-                const music = document.getElementById('bg-music');
-                const icon = document.getElementById('music-icon');
-                music.play().catch(() => {});
-                icon.className = "fa-solid fa-compact-disc text-lg text-emerald-500 animate-spin";
-                
+                forceAudioUnlock();
                 nextPage(1, 2);
             } else {
                 document.getElementById('error-msg').classList.remove('hidden');
             }
         }
 
-        // High contrast clear text hints execution
         function showNextHint() {
             const container = document.getElementById('hint-box');
             container.classList.remove('hidden');
@@ -302,7 +308,6 @@
             }
         }
 
-        // Love metric updates logic mapping
         function handleSliderChange(value) {
             const text = document.getElementById('slider-text');
             const emoji = document.getElementById('slider-emoji');
@@ -321,20 +326,29 @@
             }
         }
 
-        // Kiss Counter Increments
+        // Kiss Increments Counter with Capping Logic
         function addKiss() {
+            if (kissCount >= 25) return;
             kissCount++;
-            document.getElementById('kisses-display').innerText = kissCount;
+            
+            const display = document.getElementById('kisses-display');
+            if (kissCount >= 25) {
+                display.innerHTML = '<i class="fa-solid fa-infinity text-6xl text-rose-500 animate-pulse"></i>';
+                document.getElementById('kiss-btn').classList.add('hidden');
+                document.getElementById('kiss-max-msg').classList.remove('hidden');
+            } else {
+                display.innerText = kissCount;
+            }
         }
 
-        // WhatsApp Custom Endpoint Link Dispatch Engine
+        // WhatsApp Custom Dispatcher Link 
         function sendKissReport() {
-            const templateString = `Hey Purushan! I just logged and gave you ${kissCount} kisses on our love website portal! 💋 Send me the voice notes now! 😘`;
+            const countLabel = kissCount >= 25 ? "infinite" : kissCount;
+            const templateString = `Hey Purushan! I just logged and gave you ${countLabel} kisses on our love website portal! 💋😘`;
             const dispatchUrl = `https://api.whatsapp.com/send?phone=919353781514&text=${encodeURIComponent(templateString)}`;
             window.open(dispatchUrl, '_blank');
         }
 
-        // Unwrap Box Event Modifier
         function unwrapSurprise(element) {
             element.innerText = "❤️🔥👑";
             element.classList.remove('animate-bounce');
@@ -346,15 +360,13 @@
             nextBtn.className = "px-8 py-3 bg-rose-500 text-white font-bold rounded-2xl text-sm shadow-md cursor-pointer active:scale-95 transition-transform";
         }
 
-        // OVERLAP FIX Engine: Shifting coordinates to container corner classes makes it 100% immune to center overlapping
+        // Shuffling layout positioning coordinates prevents cross-button clipping
         function teleportNoButton() {
             const targetBtn = document.getElementById('no-btn');
             if (!targetBtn) return;
 
-            // Cycle programmatically through 4 safe isolated corner layout states
             noCornerState = (noCornerState + 1) % 4;
 
-            // Clear old alignment tracking parameters
             targetBtn.style.top = 'unset';
             targetBtn.style.bottom = 'unset';
             targetBtn.style.left = 'unset';
